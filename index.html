@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>大眼网页版</title>
+    <link rel="stylesheet" href="css/a.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/shani.js"></script>
+    <script src="js/a.js"></script>
+    <script type="text/template" id="post-list-tpl">
+      {% for _, post in posts %}
+      <div class="post-item clr" data-id="{{ post.guid }}" data-time="{{ post.publish_time }}">
+        {% if post.recommend === 1 %}
+        <span class="recommend">荐</span>
+        {% end %}
+        <div class="fl {% if post.image %}hasimg{% end %}">
+          <a class="post-title" target="_blank" href="{{ post.url }}">
+            {{ post.title }}
+          </a>
+          <a class="blog-name" href="javascript:;">{{ post.blog_name }}</a>
+          <a class="post-summary" target="_blank" href="{{ post.url }}">
+            {{ post.summary }}
+          </a>
+        </div>
+        {% if post.image %}
+        <div class="fr">
+          <a class="post-image" target="_blank" href="{{ post.url }}">
+            <img src="{{ post.image }}">
+          </a>
+        </div>
+        {% end %}
+      </div>
+      {% end %}
+    </script>
+  </head>
+  <body>
+    <div id="main">
+      <div id="post-list">
+      </div>
+      <a id="next-page" href="javascript:;">下一页</a>
+    </div>
+  </body>
+</html>
