@@ -66,7 +66,7 @@ var DyService = (function() {
       resp: resp,
     });
   };
-  proto.fo = function(req, resp) {
+  proto.followHandler = function(req, resp) {
     var self = this;
     var url = 'http://ios_blog.mzread.com/api/v1/blog/follow_blogs/follow_blogs.json';
     self.request({
@@ -76,7 +76,7 @@ var DyService = (function() {
       resp: resp,
     });
   };
-  proto.unfo = function(req, resp) {
+  proto.unfollowHandler = function(req, resp) {
     var self = this;
     var url = 'http://ios_blog.mzread.com/api/v1/blog/follow_blogs/unfollow_blogs.json';
     self.request({
@@ -86,6 +86,24 @@ var DyService = (function() {
       resp: resp,
     });
   };
+  proto.categoriesHandler = function(req, resp) {
+    var self = this;
+    var url = 'http://ios_blog.mzread.com/api/v1/blog/blog_categories.json';
+    self.request({
+      url: url,
+      req: req,
+      resp: resp,
+    });
+  };
+  proto.categoryDetailHandler = function(req, resp) {
+    var self = this;
+    var url = 'http://ios_blog.mzread.com/api/v1/blog/blog_categories/category.json';
+    self.request({
+      url: url,
+      req: req,
+      resp: resp,
+    });
+  }
   return DyService;
 })();
 
@@ -102,10 +120,16 @@ function handleAPI(req, resp) {
       dyService.groupHandler(req, resp);
       break;
     case '/api/group/follow/':
-      dyService.fo(req, resp);
+      dyService.followHandler(req, resp);
       break;
     case '/api/group/unfollow/':
-      dyService.unfo(req, resp);
+      dyService.unfollowHandler(req, resp);
+      break;
+    case '/api/categories/':
+      dyService.categoriesHandler(req, resp);
+      break;
+    case '/api/category/detail/':
+      dyService.categoryDetailHandler(req, resp);
       break;
     default:
       resp.statusCode = 404;

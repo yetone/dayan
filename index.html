@@ -13,6 +13,30 @@
     <script src="js/lighthouse.js"></script>
     <script src="js/shani.js"></script>
     <script src="js/a.js"></script>
+    <script type="text/templage" id="categories-tpl">
+      {% for _, category in categories %}
+        <a class="category-item clr" data-id="{{ category.id }}" href="#/category/{{ category.id }}">
+          <img class="category-cover" src="{{ category.cover }}">
+          <span class="category-name">{{ category.name }}</span>
+        </a>
+      {% end %}
+    </script>
+    <script type="text/templage" id="category-detail-tpl">
+      {% for _, group in groups %}
+        <div class="group-item clr">
+          <a class="group-meta-wrapper" href="#/group/{{ group.guid }}">
+            <div class="group-cover">
+              <img src="{{ group.cover }}">
+            </div>
+            <div class="group-meta">
+              <div class="group-name">{{ group.name }}</div>
+              <div class="group-desc">{{ group.description }}</div>
+            </div>
+          </a>
+          <a data-id="{{ group.guid }}" class="group-follow {% if group.followed %}followed{% end %}" href="javascript:;">{% if group.followed %}取消订阅{% else %}订阅{% end %}</a>
+        </div>
+      {% end %}
+    </script>
     <script type="text/templage" id="group-header-tpl">
       <div class="group-header">
         <div class="group-cover">
@@ -51,6 +75,10 @@
   </head>
   <body>
     <div id="main">
+      <nav id="nav" class="clr">
+        <a class="home" href="#">首页</a>
+        <a class="explore" href="#/categories/">发现</a>
+      </nav>
       <div id="header"></div>
       <div id="post-list">
       </div>
