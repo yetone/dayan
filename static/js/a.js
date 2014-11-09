@@ -31,7 +31,6 @@ $(function() {
       before_time: beforeTime
     }, cbk);
   }
-  render();
   $D.on('click', '#next-page', function() {
     var $this = $(this);
     if ($this.hasClass('pending')) return;
@@ -43,4 +42,5 @@ $(function() {
       $this.html(tmp);
     });
   });
+  $('#next-page').trigger('click');
 });
