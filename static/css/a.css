@@ -54,6 +54,10 @@ a {
 .post-summary:hover {
   color: #2d2d2d;
 }
+.blog-name:link,
+.blog-name:hover {
+  color: blue;
+}
 .blog-name:visited,
 .post-summary:visited {
   color: #999;
