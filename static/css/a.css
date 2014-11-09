@@ -42,12 +42,20 @@ a {
   padding: 20px 0;
   border-bottom: 1px solid #ddd;
 }
-.post-title {
+.post-title:link,
+.post-title:hover {
   color: #000;
   font-size: 20px;
 }
-.post-summary {
+.post-title:visited {
+  color: #7b7b7b;
+}
+.post-summary:link,
+.post-summary:hover {
   color: #2d2d2d;
+}
+.post-summary:visited {
+  color: #8c8c8c;
 }
 .post-image img {
   width: 240px;
