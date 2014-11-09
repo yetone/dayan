@@ -206,11 +206,11 @@ a {
     text-align: center;
   }
   .group-item .group-meta {
-    width: 360px;
+    width: 300px;
   }
 }
 @media screen and (max-width: 500px) {
   .group-item .group-meta {
-    width: 260px;
+    width: 200px;
   }
 }
