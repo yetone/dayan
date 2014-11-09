@@ -14,7 +14,8 @@ program
   .parse(process.argv);
 
 function handleAPI(req, resp) {
-  var baseUrl = 'http://ios_blog.mzread.com/api/v1/blog/blogs/posts.json?auth_token=r4uGGVkb6oTazGri__9F&follow_recommend=0&guids=gdwoe03ijwaz,5ic3s21bef1c,pz2kjn97f6p5,bgu1174zachb,6rnziw9cxbeb,9exbc514t2qo,196mew405l8p,h5olip5o2xe5,te5sicmon9sf,hix6ukuly98p,t2xrgexfmg90,';
+  var token = '7aNMJLgmvetQJngGwhyy';
+  var baseUrl = 'http://ios_blog.mzread.com/api/v1/blog/blogs/posts.json?auth_token=' + token + '&follow_recommend=0&guids=gdwoe03ijwaz,5ic3s21bef1c,pz2kjn97f6p5,bgu1174zachb,6rnziw9cxbeb,9exbc514t2qo,196mew405l8p,h5olip5o2xe5,te5sicmon9sf,hix6ukuly98p,t2xrgexfmg90,';
   var params = utils.getQueryParams(req.url);
   var url = utils.genUrl(baseUrl, params);
   req.pipe(request(url)).pipe(resp);
