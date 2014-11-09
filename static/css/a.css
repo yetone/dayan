@@ -186,6 +186,10 @@ a {
   color: #333;
 }
 @media screen and (max-width: 720px) {
+  .explore,
+  .home {
+    line-height: 40px;
+  }
   #main {
     width: auto;
   }
