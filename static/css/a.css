@@ -206,7 +206,7 @@ a {
     text-align: center;
   }
   .group-item .group-meta {
-    width: 300px;
+    width: 100px;
   }
 }
 @media screen and (max-width: 500px) {
