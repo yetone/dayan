@@ -188,7 +188,7 @@ a {
 @media screen and (max-width: 720px) {
   .explore,
   .home {
-    line-height: 40px;
+    line-height: 48px;
   }
   #main {
     width: auto;
