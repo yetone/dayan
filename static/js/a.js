@@ -144,7 +144,7 @@ $(function() {
     $this.addClass('pending');
     $this.html('加载中...');
     var hash = window.location.hash;
-    var inHome = hash === '';
+    var inHome = hash === '' || hash === '#/';
     var inGroup = hash.indexOf('#/group/') === 0;
     var inCates = hash.indexOf('#/categories') === 0;
     var inCate = hash.indexOf('#/category/') === 0;
