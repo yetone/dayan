@@ -6,6 +6,9 @@ a {
   display: block;
   text-decoration: none;
 }
+.dn {
+  display: none;
+}
 .clr,
 .clearfix {
   *zoom: 1;
@@ -86,6 +89,20 @@ a {
 }
 .pending {
   color: #999;
+}
+.group-header {
+  padding: 20px 0;
+  text-align: center;
+}
+.group-cover img {
+  width: 80px;
+  border-radius: 50%;
+}
+.group-name {
+  font-size: 20px;
+}
+.group-desc {
+  color: #666;
 }
 @media screen and (max-width: 720px) {
   #main {

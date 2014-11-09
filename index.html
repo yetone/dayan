@@ -10,8 +10,19 @@
     <title>大眼网页版</title>
     <link rel="stylesheet" href="css/a.css">
     <script src="js/jquery.min.js"></script>
+    <script src="js/lighthouse.js"></script>
     <script src="js/shani.js"></script>
     <script src="js/a.js"></script>
+    <script type="text/templage" id="group-header-tpl">
+      <div class="group-header">
+        <div class="group-cover">
+          <img src="{{ cover }}">
+        </div>
+        <div class="group-name">{{ name }}</div>
+        <div class="group-desc">{{ description }}</div>
+        <a data-id="{{ guid }}" class="group-follow {% if followed %}followed{% end %}" href="javascript:;">{% if followed %}取消订阅{% else %}订阅{% end %}</a>
+      </div>
+    </script>
     <script type="text/template" id="post-list-tpl">
       {% for _, post in posts %}
       <div class="post-item clr" data-id="{{ post.guid }}" data-time="{{ post.publish_time }}">
@@ -22,7 +33,7 @@
           <a class="post-title" target="_blank" href="{{ post.url }}">
             {{ post.title }}
           </a>
-          <a class="blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>
+          <a data-id="{{ post.blog_guid }}" class="blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>
           <a class="post-summary" target="_blank" href="{{ post.url }}">
             {{ post.summary }}
           </a>
@@ -40,9 +51,10 @@
   </head>
   <body>
     <div id="main">
+      <div id="header"></div>
       <div id="post-list">
       </div>
-      <a id="next-page" href="javascript:;">下一页</a>
+      <a id="next-page" class="dn" href="javascript:;">下一页</a>
     </div>
   </body>
 </html>

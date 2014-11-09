@@ -3,12 +3,9 @@ function getUrl(url) {
   if (idx === -1) return url;
   return url.substr(0, idx);
 }
-function getQueryParams(url) {
+function queryStrToObj(str) {
   var obj = {};
-  var idx = url.lastIndexOf('?');
-  if (idx === -1) return obj;
-  var queryStr = url.substr(idx + 1);
-  var pArr = queryStr.split('&');
+  var pArr = str.split('&');
   pArr.forEach(function(pair) {
     var arr = pair.split('=');
     if (arr.length !== 2) return;
@@ -16,30 +13,38 @@ function getQueryParams(url) {
   });
   return obj;
 }
+function objToQueryStr(obj) {
+  var acc = [];
+  for (var key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+    acc.push(key + '=' + obj[key]);
+  }
+  return acc.join('&');
+}
+function getQueryParams(url) {
+  var idx = url.lastIndexOf('?');
+  if (idx === -1) return {};
+  var queryStr = url.substr(idx + 1);
+  return queryStrToObj(queryStr);
+}
 function extend(a, b) {
-  var obj = {};
-  for (var key in a) {
-    obj[key] = a[key];
-  }
   for (var key in b) {
-    obj[key] = b[key];
+    a[key] = b[key];
   }
-  return obj;
+  return a;
 }
 function genUrl(base, params) {
   var baseUrl = getUrl(base);
   var baseParams = getQueryParams(base);
-  var acc = [];
   params = extend(baseParams, params);
-  for (var key in params) {
-    if (!params.hasOwnProperty(key)) continue;
-    acc.push(key + '=' + params[key]);
-  }
-  return baseUrl + '?' + acc.join('&');
+  return baseUrl + '?' + objToQueryStr(params);
 }
 
 module.exports = {
   getUrl: getUrl,
   getQueryParams: getQueryParams,
   genUrl: genUrl,
+  extend: extend,
+  queryStrToObj: queryStrToObj,
+  objToQueryStr: objToQueryStr,
 };
