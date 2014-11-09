@@ -42,5 +42,8 @@ $(function() {
       $this.html(tmp);
     });
   });
+  $D.on('click', '.blog-name', function(e) {
+    e.preventDefault();
+  });
   $('#next-page').trigger('click');
 });
