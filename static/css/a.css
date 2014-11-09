@@ -48,14 +48,14 @@ a {
   font-size: 20px;
 }
 .post-title:visited {
-  color: #7b7b7b;
+  color: #888;
 }
 .post-summary:link,
 .post-summary:hover {
   color: #2d2d2d;
 }
 .post-summary:visited {
-  color: #8c8c8c;
+  color: #999;
 }
 .post-image img {
   width: 240px;
