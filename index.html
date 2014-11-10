@@ -13,6 +13,22 @@
     <script src="js/lighthouse.js"></script>
     <script src="js/shani.js"></script>
     <script src="js/a.js"></script>
+    <script type="text/templage" id="me-header-tpl">
+      <div class="me-header">
+        <div class="me-avatar">
+          <img src="{{ avatar }}">
+        </div>
+        <div class="me-name">{{ name }}</div>
+        <ul class="me-nav clr">
+          <li class="me-collect">
+            <a href="#/follows/?follow_type=Post">收藏</a>
+          </li>
+          <li class="me-source">
+            <a href="#/follows/?follow_type=Blog">内容源</a>
+          </li>
+        </ul>
+      </div>
+    </script>
     <script type="text/templage" id="login-tpl">
       <form class="login-form" action="/api/login/">
         <div class="form-field">
@@ -90,11 +106,17 @@
   </head>
   <body>
     <div id="main">
-      <nav id="nav" class="clr">
-        <a class="home" href="#/">首页</a>
-        <a class="explore" href="#/categories/">发现</a>
-        <a class="me" href="#/follows/">我</a>
-      </nav>
+      <ul id="nav" class="clr">
+        <li class="home">
+          <a href="#/">首页</a>
+        </li>
+        <li class="explore">
+          <a href="#/categories/">发现</a>
+        </li>
+        <li class="me">
+          <a href="#/follows/?follow_type=Post">我</a>
+        </li>
+      </ul>
       <div id="header"></div>
       <div id="post-list">
       </div>

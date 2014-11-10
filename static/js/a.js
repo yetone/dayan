@@ -21,9 +21,12 @@ $(function() {
       categoryDetailRender = shani.compile(categoryDetailTpl),
       loginTpl = $('#login-tpl').html(),
       loginRender = shani.compile(loginTpl),
+      meHeaderTpl = $('#me-header-tpl').html(),
+      meHeaderRender = shani.compile(meHeaderTpl),
       $header = $('#header'),
       $postList = $('#post-list'),
-      $nextPage = $('#next-page');
+      $nextPage = $('#next-page'),
+      $nav = $('#nav');
 
   router.setBefore(function() {
     $header.html('');
@@ -34,6 +37,15 @@ $(function() {
       window.location.hash = '#/login/';
     }
   });
+
+  function triggerNav(cls) {
+    if (cls.charAt(0) !== '.') {
+      cls = '.' + cls;
+    }
+    var $cur = $nav.find(cls);
+    $cur.addClass('cur');
+    $cur.siblings().removeClass('cur');
+  }
 
   function getType(obj) {
     Object.prototype.toString.call(obj).slice(8, -1);
@@ -148,12 +160,12 @@ $(function() {
       cbk && cbk(jsn.data.blogs);
     });
   }
-  function getFollows(page, cbk) {
+  function getFollows(page, type, cbk) {
     var url = '/api/follows/';
     var data = {
       count: 20,
       page: page,
-      follow_type: 'Blog'
+      follow_type: type || 'Blog'
     };
     var promise = $.ajax({
       type: 'GET',
@@ -165,6 +177,7 @@ $(function() {
     });
   }
   function homeHandler(request) {
+    triggerNav('home');
     getHomePosts(function(posts) {
       if (router.getHash() !== request.hash) return;
       var html = postListRender({
@@ -175,6 +188,7 @@ $(function() {
     });
   }
   function groupHandler(request, guid) {
+    triggerNav('explore');
     $nextPage.data('id', guid);
     getGroupInfo(guid, request.params.page, function(info) {
       if (router.getHash() !== request.hash) return;
@@ -188,6 +202,7 @@ $(function() {
     });
   }
   function categoriesHandler(request) {
+    triggerNav('explore');
     getCategories(request.params.page, function(categories) {
       if (router.getHash() !== request.hash) return;
       var html = categoriesRender({
@@ -199,6 +214,7 @@ $(function() {
     });
   }
   function categoryHandler(request, id) {
+    triggerNav('explore');
     $nextPage.data('id', id);
     getCategoryDetail(id, request.params.page, function(groups) {
       if (router.getHash() !== request.hash) return;
@@ -211,20 +227,43 @@ $(function() {
     });
   }
   function followsHandler(request) {
-    getFollows(request.params.page, function(groups) {
+    triggerNav('me');
+    var user = JSON.parse(unescape(getCookie('user')));
+    var html = meHeaderRender(user);
+    $('.me-header').length || $header.html(html);
+    var type = request.params.follow_type || 'Blog';
+    var $col = $('.me-collect'),
+        $src = $('.me-source');
+    if (type === 'Blog') {
+      $col.removeClass('cur');
+      $src.addClass('cur');
+    } else {
+      $col.addClass('cur');
+      $src.removeClass('cur');
+    }
+    getFollows(request.params.page, type, function(groups) {
       if (router.getHash() !== request.hash) return;
-      var html = categoryDetailRender({
-        groups: groups
-      });
+      var html;
+      if (type === 'Blog') {
+        html = categoryDetailRender({
+          groups: groups
+        });
+      } else {
+        html = postListRender({
+          posts: groups
+        });
+      }
       $postList.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
   }
   function loginHandler(request) {
+    triggerNav('me');
     $postList.html(loginTpl);
   }
   function logoutHandler(request) {
+    triggerNav('me');
     setCookie('token', undefined);
     setCookie('user', undefined);
     window.location.hash = '';
@@ -297,10 +336,21 @@ $(function() {
         cbk();
       });
     } else if (inFollows) {
-      getFollows(page, function(groups) {
-        var html = categoryDetailRender({
-          groups: groups
-        });
+      var type = 'Blog';
+      if (hash.indexOf('follow_type=Post') >= 0) {
+        type = 'Post';
+      }
+      getFollows(page, type, function(groups) {
+        var html;
+        if (type === 'Blog') {
+          html = categoryDetailRender({
+            groups: groups
+          });
+        } else {
+          html = postListRender({
+            posts: groups
+          });
+        }
         $postList.append(html);
         cbk();
       });
