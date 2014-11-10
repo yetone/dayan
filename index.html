@@ -13,6 +13,21 @@
     <script src="js/lighthouse.js"></script>
     <script src="js/shani.js"></script>
     <script src="js/a.js"></script>
+    <script type="text/templage" id="login-tpl">
+      <form class="login-form" action="/api/login/">
+        <div class="form-field">
+          <label for="email"></label>
+          <input class="ipt" type="email" name="email" placeholder="轻按输入邮箱地址">
+        </div>
+        <div class="form-field">
+          <label for="password"></label>
+          <input class="ipt" type="password" name="password" placeholder="轻按输入密码">
+        </div>
+        <div class="form-action">
+          <a class="btn login" href="javascript:;">登录</a>
+        </div>
+      </form>
+    </script>
     <script type="text/templage" id="categories-tpl">
       {% for _, category in categories %}
         <a class="category-item clr" data-id="{{ category.id }}" href="#/category/{{ category.id }}">
@@ -78,6 +93,7 @@
       <nav id="nav" class="clr">
         <a class="home" href="#/">首页</a>
         <a class="explore" href="#/categories/">发现</a>
+        <a class="me" href="#/follows/">我</a>
       </nav>
       <div id="header"></div>
       <div id="post-list">

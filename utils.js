@@ -1,9 +1,13 @@
+function getType(obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1);
+}
 function getUrl(url) {
   var idx = url.indexOf('?');
   if (idx === -1) return url;
   return url.substr(0, idx);
 }
 function queryStrToObj(str) {
+  str = decodeURIComponent(str);
   var obj = {};
   var pArr = str.split('&');
   pArr.forEach(function(pair) {
@@ -39,12 +43,28 @@ function genUrl(base, params) {
   params = extend(baseParams, params);
   return baseUrl + '?' + objToQueryStr(params);
 }
+function parseCookie(str) {
+  var s, k, v, slst, kvlst,
+      res = {};
+  if (typeof str !== 'string') return res;
+  slst = str.split(';');
+  for (var i = 0, l = slst.length; i < l; i++) {
+    s = slst[i];
+    kvlst = s.split('=');
+    k = kvlst[0].trim();
+    v = kvlst[1];
+    res[k] = v;
+  }
+  return res;
+}
 
 module.exports = {
+  getType: getType,
   getUrl: getUrl,
   getQueryParams: getQueryParams,
   genUrl: genUrl,
   extend: extend,
   queryStrToObj: queryStrToObj,
   objToQueryStr: objToQueryStr,
+  parseCookie: parseCookie,
 };
