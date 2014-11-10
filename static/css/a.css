@@ -250,4 +250,7 @@ a {
   .group-item .group-meta {
     width: 140px;
   }
+  .ipt {
+    width: 200px;
+  }
 }
