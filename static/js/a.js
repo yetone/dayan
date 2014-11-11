@@ -272,7 +272,12 @@ $(function() {
   }
   function followsHandler(request) {
     triggerNav('me');
-    var user = JSON.parse(unescape(getCookie('user')));
+    try {
+      var user = JSON.parse(unescape(getCookie('user')));
+    } catch(e) {
+      window.location.hash = '#/login/';
+      return;
+    }
     var html = meHeaderRender(user);
     $('.me-header').length || $header.html(html);
     var type = request.params.follow_type || 'Blog';
