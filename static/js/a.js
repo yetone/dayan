@@ -56,7 +56,7 @@ $(function() {
   }
 
   function getType(obj) {
-    Object.prototype.toString.call(obj).slice(8, -1);
+    return Object.prototype.toString.call(obj).slice(8, -1);
   }
   function getCookie(key) {
     var cookie = parseCookie(window.document.cookie);
@@ -91,7 +91,7 @@ $(function() {
   function parseCookie(str) {
     var s, k, v, slst, kvlst,
         res = {};
-    if (getType(str) !== 'String') return res;
+    if (typeof str !== 'string') return res;
     slst = str.split(';');
     for (var i = 0, l = slst.length; i < l; i++) {
       s = slst[i];
@@ -214,7 +214,6 @@ $(function() {
   function blogHandler(request, guid) {
     triggerNav('explore');
     $nextPage.data('id', guid);
-    console.log('guid: ' + guid);
     getPostListByBlog(guid, request.params.page, function(info) {
       if (router.getHash() !== request.hash) return;
       $header.html(blogHeaderRender(info));
