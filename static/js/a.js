@@ -41,7 +41,7 @@ $(function() {
     $nextPage.hide();
     loading();
     var token = getCookie('token');
-    if (!token || token === 'undefined' && window.location.hash.indexOf('#/register') < 0) {
+    if ((!token || token === 'undefined') && window.location.hash.indexOf('#/register') < 0) {
       window.location.hash = '#/login/';
     }
   });
