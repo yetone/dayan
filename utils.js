@@ -51,6 +51,7 @@ function parseCookie(str) {
   for (var i = 0, l = slst.length; i < l; i++) {
     s = slst[i];
     kvlst = s.split('=');
+    if (kvlst.length !== 2) continue;
     k = kvlst[0].trim();
     v = kvlst[1];
     res[k] = v;

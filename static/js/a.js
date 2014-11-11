@@ -91,11 +91,12 @@ $(function() {
   function parseCookie(str) {
     var s, k, v, slst, kvlst,
         res = {};
-    if (typeof str !== 'string') return res;
+    if (getType(str) !== 'String') return res;
     slst = str.split(';');
     for (var i = 0, l = slst.length; i < l; i++) {
       s = slst[i];
       kvlst = s.split('=');
+      if (kvlst.length !== 2) continue;
       k = kvlst[0].trim();
       v = kvlst[1];
       res[k] = v;
