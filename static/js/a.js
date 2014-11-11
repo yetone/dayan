@@ -41,7 +41,7 @@ $(function() {
     $nextPage.hide();
     loading();
     var token = getCookie('token');
-    if (!token || token === 'undefined') {
+    if (!token || token === 'undefined' && window.location.hash !== '#/register/') {
       window.location.hash = '#/login/';
     }
   });
@@ -349,7 +349,7 @@ $(function() {
         $btn.html(tmp);
         setCookie('token', jsn.auth_token);
         setCookie('user', JSON.stringify(jsn));
-        window.location.hash = '';
+        window.location.hash = '#/recommend/blogs/';
       }
     });
   });
