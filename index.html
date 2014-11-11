@@ -14,12 +14,12 @@
     <script src="js/shani.js"></script>
     <script src="js/a.js"></script>
     <script type="text/templage" id="me-header-tpl">
-      <div class="me-header">
-        <div class="me-avatar">
+      <div class="dy-header me-header">
+        <div class="dy-avatar me-avatar">
           <img src="{{ avatar }}">
         </div>
-        <div class="me-name">{{ name }}</div>
-        <ul class="me-nav clr">
+        <div class="dy-name me-name">{{ name }}</div>
+        <ul class="dy-nav me-nav clr">
           <li class="me-collect">
             <a href="#/follows/?follow_type=Post">收藏</a>
           </li>
@@ -28,6 +28,49 @@
           </li>
         </ul>
       </div>
+    </script>
+    <script type="text/templage" id="account-header-tpl">
+      <div class="dy-header account-header">
+        <ul class="dy-nav clr">
+          <li class="account-login">
+            <a href="#/login/">登录</a>
+          </li>
+          <li class="account-register">
+            <a href="#/register/">注册</a>
+          </li>
+        </ul>
+      </div>
+    </script>
+    <script type="text/templage" id="explore-header-tpl">
+      <div class="dy-header explore-header">
+        <ul class="dy-nav clr">
+          <li class="explore-star">
+            <a href="#/recommend/blogs/">精选</a>
+          </li>
+          <li class="explore-cate">
+            <a href="#/category/list/">分类</a>
+          </li>
+        </ul>
+      </div>
+    </script>
+    <script type="text/templage" id="register-tpl">
+      <form class="register-form" action="/api/login/">
+        <div class="form-field">
+          <label for="email"></label>
+          <input class="ipt" type="email" name="user[email]" placeholder="轻按输入邮箱地址">
+        </div>
+        <div class="form-field">
+          <label for="password"></label>
+          <input class="ipt" type="password" name="user[password]" placeholder="轻按输入密码">
+        </div>
+        <div class="form-field">
+          <label for="name"></label>
+          <input class="ipt" type="name" name="user[name]" placeholder="轻按输入昵称">
+        </div>
+        <div class="form-action">
+          <button class="btn register">注册</button>
+        </div>
+      </form>
     </script>
     <script type="text/templage" id="login-tpl">
       <form class="login-form" action="/api/login/">
@@ -40,11 +83,11 @@
           <input class="ipt" type="password" name="password" placeholder="轻按输入密码">
         </div>
         <div class="form-action">
-          <a class="btn login" href="javascript:;">登录</a>
+          <button class="btn login">登录</button>
         </div>
       </form>
     </script>
-    <script type="text/templage" id="categories-tpl">
+    <script type="text/templage" id="category-list-tpl">
       {% for _, category in categories %}
         <a class="category-item clr" data-id="{{ category.id }}" href="#/category/{{ category.id }}">
           <img class="category-cover" src="{{ category.cover }}">
@@ -52,30 +95,30 @@
         </a>
       {% end %}
     </script>
-    <script type="text/templage" id="category-detail-tpl">
-      {% for _, group in groups %}
-        <div class="group-item clr">
-          <a class="group-meta-wrapper" href="#/group/{{ group.guid }}">
-            <div class="group-cover">
-              <img src="{{ group.cover }}">
+    <script type="text/templage" id="blog-list-tpl">
+      {% for _, blog in blogs %}
+        <div class="blog-item clr">
+          <a class="blog-meta-wrapper" href="#/blog/{{ blog.guid }}">
+            <div class="blog-cover">
+              <img src="{{ blog.cover }}">
             </div>
-            <div class="group-meta">
-              <div class="group-name">{{ group.name }}</div>
-              <div class="group-desc">{{ group.description }}</div>
+            <div class="blog-meta">
+              <div class="blog-name">{{ blog.name }}</div>
+              <div class="blog-desc">{{ blog.description }}</div>
             </div>
           </a>
-          <a data-id="{{ group.guid }}" class="group-follow {% if group.followed %}followed{% end %}" href="javascript:;">{% if group.followed %}取消订阅{% else %}订阅{% end %}</a>
+          <a data-id="{{ blog.guid }}" class="blog-follow {% if blog.followed %}followed{% end %}" href="javascript:;">{% if blog.followed %}取消订阅{% else %}订阅{% end %}</a>
         </div>
       {% end %}
     </script>
-    <script type="text/templage" id="group-header-tpl">
-      <div class="group-header">
-        <div class="group-cover">
+    <script type="text/templage" id="blog-header-tpl">
+      <div class="blog-header">
+        <div class="blog-cover">
           <img src="{{ cover }}">
         </div>
-        <div class="group-name">{{ name }}</div>
-        <div class="group-desc">{{ description }}</div>
-        <a data-id="{{ guid }}" class="group-follow {% if followed %}followed{% end %}" href="javascript:;">{% if followed %}取消订阅{% else %}订阅{% end %}</a>
+        <div class="blog-name">{{ name }}</div>
+        <div class="blog-desc">{{ description }}</div>
+        <a data-id="{{ guid }}" class="blog-follow {% if followed %}followed{% end %}" href="javascript:;">{% if followed %}取消订阅{% else %}订阅{% end %}</a>
       </div>
     </script>
     <script type="text/template" id="post-list-tpl">
@@ -88,7 +131,7 @@
           <a class="post-title" target="_blank" href="{{ post.url }}">
             {{ post.title }}
           </a>
-          <a data-id="{{ post.blog_guid }}" class="blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>
+          <a data-id="{{ post.blog_guid }}" class="post-blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>
           <a class="post-summary" target="_blank" href="{{ post.url }}">
             {{ post.summary }}
           </a>
@@ -111,15 +154,14 @@
           <a href="#/">首页</a>
         </li>
         <li class="explore">
-          <a href="#/categories/">发现</a>
+          <a href="#/category/list/">发现</a>
         </li>
         <li class="me">
           <a href="#/follows/?follow_type=Post">我</a>
         </li>
       </ul>
       <div id="header"></div>
-      <div id="post-list">
-      </div>
+      <div id="item-list-wrap"></div>
       <a id="next-page" class="dn" href="javascript:;">下一页</a>
     </div>
   </body>

@@ -22,14 +22,11 @@ var DyService = (function() {
   proto.request = function(opt, cbk) {
     var self = this;
     var token = utils.parseCookie(opt.req.headers.cookie).token;
-    opt = utils.extend({
-      method: 'GET'
-    }, opt);
     baseParams = utils.getQueryParams(opt.req.url);
     opt.url = utils.genUrl(opt.url, token ? utils.extend({
       auth_token: token,
     }, baseParams) : baseParams);
-    switch (opt.method.toUpperCase()) {
+    switch (opt.req.method.toUpperCase()) {
       case 'POST':
         var body = '';
         opt.req.on('data', function(data) {
@@ -55,19 +52,31 @@ var DyService = (function() {
         method: method
       });
     }
-    var i = 0, l = arr.length, item;
+    var i = 0, l = arr.length, item, methodList;
     for (; i < l; i++) {
       item = arr[i];
+      switch (utils.getType(item.method)) {
+        case 'Array':
+          methodList = item.method.map(function(e) {
+            return e.toUpperCase();
+          });
+          break;
+        case 'String':
+          methodList = [item.method.toUpperCase()];
+          break;
+        default:
+          methodList = ['GET'];
+          break;
+      }
       self.handlerList.push([item.router, (function(item) {
         return function(req, resp) {
           self.request({
             url: item.url,
-            method: item.method ? item.method.toUpperCase() : 'GET',
             req: req,
             resp: resp,
           });
         };
-      })(item)]);
+      })(item), methodList]);
     }
   };
   proto.route = function(req, resp) {
@@ -80,11 +89,16 @@ var DyService = (function() {
       re = new RegExp(('^' + item[0]).replace(/\//g, '\\/'));
       match = pathname.match(re);
       if (!match) continue;
-      item[1](req, resp);
+      if (item[2].indexOf(req.method) > -1) {
+        item[1](req, resp);
+      } else {
+        resp.statusCode = 405;
+        resp.end('Method not allowed.');
+      }
       return;
     }
     resp.statusCode = 404;
-    resp.end('not found');
+    resp.end('Not found.');
   };
   return DyService;
 })();
@@ -92,25 +106,25 @@ var DyService = (function() {
 var dyService = new DyService();
 var handlerList = [
   {
-    router: '/api/home/posts/',
+    router: '/api/post/list/by_home/',
     url: 'http://ios_blog.mzread.com/api/v1/blog/blogs/posts.json?follow_recommend=0&guids=gdwoe03ijwaz,5ic3s21bef1c,pz2kjn97f6p5,bgu1174zachb,6rnziw9cxbeb,9exbc514t2qo,196mew405l8p,h5olip5o2xe5,te5sicmon9sf,hix6ukuly98p,t2xrgexfmg90,',
   },
   {
-    router: '/api/group/posts/',
+    router: '/api/post/list/by_blog/',
     url:'http://ios_blog.mzread.com/api/v1/blog/blogs/blog.json',
   },
   {
-    router: '/api/group/follow/',
+    router: '/api/blog/follow/',
     url: 'http://ios_blog.mzread.com/api/v1/blog/follow_blogs/follow_blogs.json',
     method: 'POST',
   },
   {
-    router: '/api/group/unfollow/',
+    router: '/api/blog/unfollow/',
     url: 'http://ios_blog.mzread.com/api/v1/blog/follow_blogs/unfollow_blogs.json',
     method: 'POST',
   },
   {
-    router: '/api/categories/',
+    router: '/api/category/list/',
     url: 'http://ios_blog.mzread.com/api/v1/blog/blog_categories.json',
   },
   {
@@ -126,6 +140,15 @@ var handlerList = [
     router: '/api/follows/',
     url: 'http://ios_blog.mzread.com/api/v1/blog/follow_blogs.json',
   },
+  {
+    router: '/api/register/',
+    url: 'http://ios_blog.mzread.com/users.json',
+    method: 'POST',
+  },
+  {
+    router: '/api/blog/list/by_recommend/',
+    url: 'http://ios_blog.mzread.com/api/v1/blog/blogs/recommend_blogs.json',
+  },
 ];
 dyService.registerHandler(handlerList);
 
@@ -136,7 +159,7 @@ server.on('request', function(req, resp) {
     return fs.readFile('./index.html', function(err, data) {
       if (err) {
         resp.statusCode = 502;
-        return resp.end('some error');
+        return resp.end('Some error.');
       }
       resp.end(data.toString());
     });

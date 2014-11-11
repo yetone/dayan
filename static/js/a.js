@@ -3,28 +3,36 @@ $(function() {
       router = new LightHouse({
       }),
       routers = [
-        [/^\/group\/([^\/]*)/, groupHandler],
+        [/^\/blog\/([^\/]*)/, blogHandler],
         [/^\/$/, homeHandler],
-        [/^\/categories/, categoriesHandler],
+        [/^\/category\/list/, categoryListHandler],
         [/^\/category\/([^\/]*)/, categoryHandler],
+        [/^\/register/, registerHandler],
         [/^\/login/, loginHandler],
         [/^\/logout/, logoutHandler],
         [/^\/follows/, followsHandler],
+        [/^\/recommend\/blogs/, recommendHandler],
       ],
       postListTpl = $('#post-list-tpl').html(),
       postListRender = shani.compile(postListTpl),
-      groupHeaderTpl = $('#group-header-tpl').html(),
-      groupHeaderRender = shani.compile(groupHeaderTpl),
-      categoriesTpl = $('#categories-tpl').html(),
-      categoriesRender = shani.compile(categoriesTpl),
-      categoryDetailTpl = $('#category-detail-tpl').html(),
-      categoryDetailRender = shani.compile(categoryDetailTpl),
+      blogHeaderTpl = $('#blog-header-tpl').html(),
+      blogHeaderRender = shani.compile(blogHeaderTpl),
+      categoryListTpl = $('#category-list-tpl').html(),
+      categoryListRender = shani.compile(categoryListTpl),
+      blogListTpl = $('#blog-list-tpl').html(),
+      blogListRender = shani.compile(blogListTpl),
       loginTpl = $('#login-tpl').html(),
       loginRender = shani.compile(loginTpl),
+      registerTpl = $('#register-tpl').html(),
+      registerRender= shani.compile(registerTpl),
       meHeaderTpl = $('#me-header-tpl').html(),
       meHeaderRender = shani.compile(meHeaderTpl),
+      accountHeaderTpl = $('#account-header-tpl').html(),
+      accountHeaderRender = shani.compile(accountHeaderTpl),
+      exploreHeaderTpl = $('#explore-header-tpl').html(),
+      exploreHeaderRender = shani.compile(exploreHeaderTpl),
       $header = $('#header'),
-      $postList = $('#post-list'),
+      $itemListWrap = $('#item-list-wrap'),
       $nextPage = $('#next-page'),
       $nav = $('#nav');
 
@@ -95,10 +103,10 @@ $(function() {
     return res;
   }
   function loading() {
-    $postList.html('<div class="loading">加载中...</div>');
+    $itemListWrap.html('<div class="loading">加载中...</div>');
   }
-  function getHomePosts(cbk) {
-    var url = '/api/home/posts/';
+  function getPostListByHome(cbk) {
+    var url = '/api/post/list/by_home/';
     var beforeTime = $('.post-item').last().data('time');
     data = {
       count: 20,
@@ -113,12 +121,12 @@ $(function() {
       cbk && cbk(jsn.data.posts);
     });
   }
-  function getGroupInfo(guid, page, cbk) {
-    var url = '/api/group/posts/';
+  function getPostListByBlog(guid, page, cbk) {
+    var url = '/api/post/list/by_blog/';
     var data = {
       count: 20,
       guid: guid,
-      page: page
+      page: page || 1
     };
     var promise = $.ajax({
       type: 'GET',
@@ -129,11 +137,11 @@ $(function() {
       cbk && cbk(jsn.data.blog_info);
     });
   }
-  function getCategories(page, cbk) {
-    var url = '/api/categories/';
+  function getCategoryList(page, cbk) {
+    var url = '/api/category/list/';
     var data = {
       count: 20,
-      page: page
+      page: page || 1
     };
     var promise = $.ajax({
       type: 'GET',
@@ -144,12 +152,27 @@ $(function() {
       cbk && cbk(jsn.data.categories);
     });
   }
-  function getCategoryDetail(id, page, cbk) {
+  function getBlogListByCategory(id, page, cbk) {
     var url = '/api/category/detail/';
     var data = {
       count: 20,
       id: id,
-      page: page
+      page: page || 1
+    };
+    var promise = $.ajax({
+      type: 'GET',
+      url: url,
+      data: data
+    });
+    promise.done(function(jsn) {
+      cbk && cbk(jsn.data.blogs);
+    });
+  }
+  function getBlogListByRecommend(page, cbk) {
+    var url = '/api/blog/list/by_recommend/';
+    var data = {
+      count: 20,
+      page: page || 1
     };
     var promise = $.ajax({
       type: 'GET',
@@ -164,7 +187,7 @@ $(function() {
     var url = '/api/follows/';
     var data = {
       count: 20,
-      page: page,
+      page: page || 1,
       follow_type: type || 'Blog'
     };
     var promise = $.ajax({
@@ -178,37 +201,42 @@ $(function() {
   }
   function homeHandler(request) {
     triggerNav('home');
-    getHomePosts(function(posts) {
+    getPostListByHome(function(posts) {
       if (router.getHash() !== request.hash) return;
       var html = postListRender({
         posts: posts
       });
-      $postList.html(html);
+      $itemListWrap.html(html);
       $nextPage.show();
     });
   }
-  function groupHandler(request, guid) {
+  function blogHandler(request, guid) {
     triggerNav('explore');
     $nextPage.data('id', guid);
-    getGroupInfo(guid, request.params.page, function(info) {
+    console.log('guid: ' + guid);
+    getPostListByBlog(guid, request.params.page, function(info) {
       if (router.getHash() !== request.hash) return;
-      $header.html(groupHeaderRender(info));
+      $header.html(blogHeaderRender(info));
       var html = postListRender({
         posts: info.posts
       });
-      $postList.html(html);
+      $itemListWrap.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
   }
-  function categoriesHandler(request) {
+  function categoryListHandler(request) {
     triggerNav('explore');
-    getCategories(request.params.page, function(categories) {
+    $('.explore-header').length || $header.html(exploreHeaderTpl);
+    var $li = $('.explore-cate');
+    $li.addClass('cur');
+    $li.siblings().removeClass('cur');
+    getCategoryList(request.params.page, function(categories) {
       if (router.getHash() !== request.hash) return;
-      var html = categoriesRender({
+      var html = categoryListRender({
         categories: categories
       });
-      $postList.html(html);
+      $itemListWrap.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
@@ -216,12 +244,28 @@ $(function() {
   function categoryHandler(request, id) {
     triggerNav('explore');
     $nextPage.data('id', id);
-    getCategoryDetail(id, request.params.page, function(groups) {
+    getBlogListByCategory(id, request.params.page, function(blogs) {
       if (router.getHash() !== request.hash) return;
-      var html = categoryDetailRender({
-        groups: groups
+      var html = blogListRender({
+        blogs: blogs
       });
-      $postList.html(html);
+      $itemListWrap.html(html);
+      $nextPage.data('page', request.params.page || 1);
+      $nextPage.show();
+    });
+  }
+  function recommendHandler(request) {
+    triggerNav('explore');
+    $('.explore-header').length || $header.html(exploreHeaderTpl);
+    var $li = $('.explore-star');
+    $li.addClass('cur');
+    $li.siblings().removeClass('cur');
+    getBlogListByRecommend(request.params.page, function(blogs) {
+      if (router.getHash() !== request.hash) return;
+      var html = blogListRender({
+        blogs: blogs
+      });
+      $itemListWrap.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
@@ -241,26 +285,38 @@ $(function() {
       $col.addClass('cur');
       $src.removeClass('cur');
     }
-    getFollows(request.params.page, type, function(groups) {
+    getFollows(request.params.page, type, function(blogs) {
       if (router.getHash() !== request.hash) return;
       var html;
       if (type === 'Blog') {
-        html = categoryDetailRender({
-          groups: groups
+        html = blogListRender({
+          blogs: blogs
         });
       } else {
         html = postListRender({
-          posts: groups
+          posts: blogs
         });
       }
-      $postList.html(html);
+      $itemListWrap.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
   }
+  function registerHandler(request) {
+    triggerNav('me');
+    $('.account-header').length || $header.html(accountHeaderTpl);
+    var $li = $('.account-register');
+    $li.addClass('cur');
+    $li.siblings().removeClass('cur');
+    $itemListWrap.html(registerTpl);
+  }
   function loginHandler(request) {
     triggerNav('me');
-    $postList.html(loginTpl);
+    $('.account-header').length || $header.html(accountHeaderTpl);
+    var $li = $('.account-login');
+    $li.addClass('cur');
+    $li.siblings().removeClass('cur');
+    $itemListWrap.html(loginTpl);
   }
   function logoutHandler(request) {
     triggerNav('me');
@@ -268,11 +324,43 @@ $(function() {
     setCookie('user', undefined);
     window.location.hash = '';
   }
-  $D.on('click', '.login', function() {
+  $D.on('submit', '.register-form', function(e) {
+    e.preventDefault();
     var $this = $(this);
-    var $form = $this.parents('form');
+    var $btn = $this.find('.btn');
+    var tmp = $btn.html();
     var data = {};
-    $form.serializeArray().map(function(item) {
+    $btn.html('注册中...');
+    $this.serializeArray().map(function(item) {
+      data[item.name] = item.value;
+    });
+    $.ajax({
+      url: '/api/register/',
+      type: 'POST',
+      data: data,
+      success: function(jsn) {
+        if (jsn.errors) {
+          for (var key in jsn.errors) {
+            if (!jsn.errors.hasOwnProperty(key)) continue;
+            $this.find('input[type=' + key + ']').val('').attr('placeholder', jsn.errors[key][0]);
+          }
+          return;
+        }
+        $btn.html(tmp);
+        setCookie('token', jsn.auth_token);
+        setCookie('user', JSON.stringify(jsn));
+        window.location.hash = '';
+      }
+    });
+  });
+  $D.on('submit', '.login-form', function(e) {
+    e.preventDefault();
+    var $this = $(this);
+    var $btn = $this.find('.btn');
+    var tmp = $btn.html();
+    var data = {};
+    $btn.html('登录中...');
+    $this.serializeArray().map(function(item) {
       data[item.name] = item.value;
     });
     $.ajax({
@@ -280,7 +368,14 @@ $(function() {
       type: 'POST',
       data: data,
       success: function(jsn) {
-        if (!jsn.token) return;
+        if (jsn.errors) {
+          for (var key in jsn.errors) {
+            if (!jsn.errors.hasOwnProperty(key)) continue;
+            $this.find('input').eq(key | 0).val('').attr('placeholder', jsn.errors[key]);
+          }
+          return;
+        }
+        $btn.html(tmp);
         setCookie('token', jsn.token);
         setCookie('user', JSON.stringify(jsn.user));
         window.location.hash = '';
@@ -295,10 +390,11 @@ $(function() {
     $this.html('加载中...');
     var hash = window.location.hash;
     var inHome = hash === '' || hash === '#/';
-    var inGroup = hash.indexOf('#/group/') === 0;
-    var inCates = hash.indexOf('#/categories') === 0;
-    var inCate = hash.indexOf('#/category/') === 0;
-    var inFollows = hash.indexOf('#/follows') === 0;
+    var inblog = hash.indexOf('#/blog/') === 0;
+    var inCates = hash.indexOf('#/category/list/') === 0;
+    var inCate = hash.indexOf('#/category/') === 0 && !inCates;
+    var inFollows = hash.indexOf('#/follows/') === 0;
+    var inStar = hash.indexOf('#/recommend/blogs/') === 0;
     var page = ($this.data('page') || 1) + 1;
     var cbk = function() {
       $this.removeClass('pending');
@@ -308,31 +404,39 @@ $(function() {
       }
     }
     var postCbk = function(posts) {
-      posts = inGroup ? posts.posts : posts;
+      posts = inblog ? posts.posts : posts;
       var html = postListRender({
         posts: posts
       });
-      $postList.append(html);
+      $itemListWrap.append(html);
       cbk();
     };
-    if (inGroup) {
-      getGroupInfo($this.data('id'), page, postCbk);
+    if (inblog) {
+      getPostListByBlog($this.data('id'), page, postCbk);
     } else if (inHome) {
-      getHomePosts(postCbk);
+      getPostListByHome(postCbk);
     } else if (inCates) {
-      getCategories(page, function(categories) {
-        var html = categoriesRender({
+      getCategoryList(page, function(categories) {
+        var html = categoryListRender({
           categories: categories
         });
-        $postList.append(html);
+        $itemListWrap.append(html);
         cbk();
       });
     } else if (inCate) {
-      getCategoryDetail($this.data('id'), page, function(groups) {
-        var html = categoryDetailRender({
-          groups: groups
+      getBlogListByCategory($this.data('id'), page, function(blogs) {
+        var html = blogListRender({
+          blogs: blogs
         });
-        $postList.append(html);
+        $itemListWrap.append(html);
+        cbk();
+      });
+    } else if (inStar) {
+      getBlogListByRecommend(page, function(blogs) {
+        var html = blogListRender({
+          blogs: blogs
+        });
+        $itemListWrap.append(html);
         cbk();
       });
     } else if (inFollows) {
@@ -340,27 +444,28 @@ $(function() {
       if (hash.indexOf('follow_type=Post') >= 0) {
         type = 'Post';
       }
-      getFollows(page, type, function(groups) {
+      getFollows(page, type, function(blogs) {
         var html;
         if (type === 'Blog') {
-          html = categoryDetailRender({
-            groups: groups
+          html = blogListRender({
+            blogs: blogs
           });
         } else {
           html = postListRender({
-            posts: groups
+            posts: blogs
           });
         }
-        $postList.append(html);
+        $itemListWrap.append(html);
         cbk();
       });
     }
   });
-  $D.on('click', '.blog-name', function(e) {
+  $D.on('click', '.post-blog-name', function(e) {
+    if ($(this).data('id') === 'undefined') return;
     e.preventDefault();
-    window.location.hash = '#/group/' + $(this).data('id') + '/';
+    window.location.hash = '#/blog/' + $(this).data('id') + '/';
   });
-  $D.on('click', '.group-follow', function(e) {
+  $D.on('click', '.blog-follow', function(e) {
     e.preventDefault();
     var $this = $(this);
     if ($this.hasClass('pending')) return;
@@ -368,7 +473,7 @@ $(function() {
     var isFo = $this.hasClass('followed');
     var promise = $.ajax({
       type: 'POST',
-      url: isFo ? '/api/group/unfollow' : '/api/group/follow',
+      url: isFo ? '/api/blog/unfollow' : '/api/blog/follow',
       data: {
         guids: $this.data('id')
       }
