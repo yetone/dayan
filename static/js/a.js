@@ -344,6 +344,7 @@ $(function() {
       type: 'POST',
       data: data,
       success: function(jsn) {
+        $btn.html(tmp);
         if (jsn.errors) {
           for (var key in jsn.errors) {
             if (!jsn.errors.hasOwnProperty(key)) continue;
@@ -351,7 +352,6 @@ $(function() {
           }
           return;
         }
-        $btn.html(tmp);
         setCookie('token', jsn.auth_token);
         setCookie('user', JSON.stringify(jsn));
         window.location.hash = '#/recommend/blogs/';
@@ -373,6 +373,7 @@ $(function() {
       type: 'POST',
       data: data,
       success: function(jsn) {
+        $btn.html(tmp);
         if (jsn.errors) {
           for (var key in jsn.errors) {
             if (!jsn.errors.hasOwnProperty(key)) continue;
@@ -380,7 +381,6 @@ $(function() {
           }
           return;
         }
-        $btn.html(tmp);
         setCookie('token', jsn.token);
         setCookie('user', JSON.stringify(jsn.user));
         window.location.hash = '';
