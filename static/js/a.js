@@ -347,7 +347,7 @@ $(function() {
         if (jsn.errors) {
           for (var key in jsn.errors) {
             if (!jsn.errors.hasOwnProperty(key)) continue;
-            $this.find('input[type=' + key + ']').val('').attr('placeholder', jsn.errors[key][0]);
+            $this.find('input.' + key).val('').attr('placeholder', jsn.errors[key][0]);
           }
           return;
         }
