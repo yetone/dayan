@@ -128,7 +128,7 @@
         <span class="recommend">荐</span>
         {% end %}
         <div class="fl {% if post.image %}hasimg{% end %}">
-          <a class="post-title" target="_blank" href="{{ post.url }}">
+          <a class="post-title" href="#/post/{{ encodeURIComponent(post.url) }}">
             {{ post.title }}
           </a>
           <a data-id="{{ post.blog_guid }}" class="post-blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>
@@ -161,7 +161,7 @@
         </li>
       </ul>
       <div id="header"></div>
-      <div id="item-list-wrap"></div>
+      <div id="container"></div>
       <a id="next-page" class="dn" href="javascript:;">下一页</a>
     </div>
   </body>

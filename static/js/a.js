@@ -4,6 +4,7 @@ $(function() {
       }),
       routers = [
         [/^\/blog\/([^\/]*)/, blogHandler],
+        [/^\/post\/([^\/]*)/, postHandler],
         [/^\/$/, homeHandler],
         [/^\/category\/list/, categoryListHandler],
         [/^\/category\/([^\/]*)/, categoryHandler],
@@ -32,7 +33,7 @@ $(function() {
       exploreHeaderTpl = $('#explore-header-tpl').html(),
       exploreHeaderRender = shani.compile(exploreHeaderTpl),
       $header = $('#header'),
-      $itemListWrap = $('#item-list-wrap'),
+      $container = $('#container'),
       $nextPage = $('#next-page'),
       $nav = $('#nav');
 
@@ -104,7 +105,7 @@ $(function() {
     return res;
   }
   function loading() {
-    $itemListWrap.html('<div class="loading">加载中...</div>');
+    $container.html('<div class="loading">加载中...</div>');
   }
   function getPostListByHome(cbk) {
     var url = '/api/post/list/by_home/';
@@ -122,11 +123,11 @@ $(function() {
       cbk && cbk(jsn.data.posts);
     });
   }
-  function getPostListByBlog(guid, page, cbk) {
+  function getPostListByBlog(blogId, page, cbk) {
     var url = '/api/post/list/by_blog/';
     var data = {
       count: 20,
-      guid: guid,
+      guid: blogId,
       page: page || 1
     };
     var promise = $.ajax({
@@ -207,20 +208,26 @@ $(function() {
       var html = postListRender({
         posts: posts
       });
-      $itemListWrap.html(html);
+      $container.html(html);
       $nextPage.show();
     });
   }
-  function blogHandler(request, guid) {
+  function postHandler(request, _src) {
+    var src = decodeURIComponent(_src);
+    var $ifr = $('<iframe class="post-container"></iframe>');
+    $ifr.attr('src', src);
+    $container.html($ifr);
+  }
+  function blogHandler(request, blogId) {
     triggerNav('explore');
-    $nextPage.data('id', guid);
-    getPostListByBlog(guid, request.params.page, function(info) {
+    $nextPage.data('id', blogId);
+    getPostListByBlog(blogId, request.params.page, function(info) {
       if (router.getHash() !== request.hash) return;
       $header.html(blogHeaderRender(info));
       var html = postListRender({
         posts: info.posts
       });
-      $itemListWrap.html(html);
+      $container.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
@@ -236,7 +243,7 @@ $(function() {
       var html = categoryListRender({
         categories: categories
       });
-      $itemListWrap.html(html);
+      $container.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
@@ -249,7 +256,7 @@ $(function() {
       var html = blogListRender({
         blogs: blogs
       });
-      $itemListWrap.html(html);
+      $container.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
@@ -265,7 +272,7 @@ $(function() {
       var html = blogListRender({
         blogs: blogs
       });
-      $itemListWrap.html(html);
+      $container.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
@@ -302,7 +309,7 @@ $(function() {
           posts: blogs
         });
       }
-      $itemListWrap.html(html);
+      $container.html(html);
       $nextPage.data('page', request.params.page || 1);
       $nextPage.show();
     });
@@ -313,7 +320,7 @@ $(function() {
     var $li = $('.account-register');
     $li.addClass('cur');
     $li.siblings().removeClass('cur');
-    $itemListWrap.html(registerTpl);
+    $container.html(registerTpl);
   }
   function loginHandler(request) {
     triggerNav('me');
@@ -321,7 +328,7 @@ $(function() {
     var $li = $('.account-login');
     $li.addClass('cur');
     $li.siblings().removeClass('cur');
-    $itemListWrap.html(loginTpl);
+    $container.html(loginTpl);
   }
   function logoutHandler(request) {
     triggerNav('me');
@@ -413,7 +420,7 @@ $(function() {
       var html = postListRender({
         posts: posts
       });
-      $itemListWrap.append(html);
+      $container.append(html);
       cbk();
     };
     if (inblog) {
@@ -425,7 +432,7 @@ $(function() {
         var html = categoryListRender({
           categories: categories
         });
-        $itemListWrap.append(html);
+        $container.append(html);
         cbk();
       });
     } else if (inCate) {
@@ -433,7 +440,7 @@ $(function() {
         var html = blogListRender({
           blogs: blogs
         });
-        $itemListWrap.append(html);
+        $container.append(html);
         cbk();
       });
     } else if (inStar) {
@@ -441,7 +448,7 @@ $(function() {
         var html = blogListRender({
           blogs: blogs
         });
-        $itemListWrap.append(html);
+        $container.append(html);
         cbk();
       });
     } else if (inFollows) {
@@ -460,7 +467,7 @@ $(function() {
             posts: blogs
           });
         }
-        $itemListWrap.append(html);
+        $container.append(html);
         cbk();
       });
     }
