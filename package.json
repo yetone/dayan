@@ -12,6 +12,7 @@
     "commander": "^2.5.0",
     "mocha": "^2.0.1",
     "node-static": "^0.7.6",
+    "readability": "^0.1.0",
     "request": "^2.47.0"
   }
 }

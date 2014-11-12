@@ -13,6 +13,11 @@
     <script src="js/lighthouse.js"></script>
     <script src="js/shani.js"></script>
     <script src="js/a.js"></script>
+    <script type="text/templage" id="post-detail-tpl">
+      <div class="post-detail">
+        <div class="content">{{ content }}</div>
+      </div>
+    </script>
     <script type="text/templage" id="me-header-tpl">
       <div class="dy-header me-header">
         <div class="dy-avatar me-avatar">
@@ -128,7 +133,7 @@
         <span class="recommend">荐</span>
         {% end %}
         <div class="fl {% if post.image %}hasimg{% end %}">
-          <a class="post-title" target="_blank" href="{{ post.url }}">
+          <a class="post-title" href="#/post/{{ encodeURIComponent(post.url) }}/">
             {{ post.title }}
           </a>
           <a data-id="{{ post.blog_guid }}" class="post-blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>

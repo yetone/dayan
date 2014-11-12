@@ -32,6 +32,8 @@ $(function() {
       accountHeaderRender = shani.compile(accountHeaderTpl),
       exploreHeaderTpl = $('#explore-header-tpl').html(),
       exploreHeaderRender = shani.compile(exploreHeaderTpl),
+      postDetailTpl = $('#post-detail-tpl').html(),
+      postDetailRender = shani.compile(postDetailTpl),
       $header = $('#header'),
       $container = $('#container'),
       $nextPage = $('#next-page'),
@@ -212,11 +214,29 @@ $(function() {
       $nextPage.show();
     });
   }
-  function postHandler(request, _src) {
-    var src = decodeURIComponent(_src);
-    var $ifr = $('<iframe class="post-container"></iframe>');
-    $ifr.attr('src', src);
-    $container.html($ifr);
+  function postHandler(request, _url) {
+    var url = decodeURIComponent(_url);
+    $.ajax({
+      type: 'GET',
+      url: '/api/post/detail/',
+      data: {
+        url: url
+      }
+    }).done(function(jsn) {
+      if (jsn.status !== 'success') {
+        // FIXME
+        alert(jsn.message);
+        return;
+      }
+      var html = postDetailRender(jsn.data);
+      // TODO
+      $container.html(html);
+      $('#readability-content').find('img').each(function(_, img) {
+        var $img = $(img);
+        if (!$img.data('src')) return;
+        $img.attr('src', $img.data('src'));
+      });
+    });
   }
   function blogHandler(request, blogId) {
     triggerNav('explore');

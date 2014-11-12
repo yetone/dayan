@@ -5,7 +5,9 @@ require! {
     'node-static'
     http
     url
-    \./utils.js
+    \./utils
+    \./libs
+    \./helpers
 }
 
 file = new node-static.Server \./static
@@ -34,12 +36,13 @@ class DyService
 
                 do
                     <-! req.on \end
+                    body = decodeURIComponent body
                     form = utils.query-str-to-obj body
                     req.pipe request.post url, form: form .pipe resp
             case \GET
                 req.pipe request.get url .pipe resp
 
-    register-handler: (router, url, method) !->
+    register-handler: (router, url, method, handler) !->
         self = @
         arr = router
         if typeof! arr is not \Array
@@ -47,6 +50,7 @@ class DyService
                 router: router
                 url: url
                 method: method
+                handler: handler
 
         for item in arr
             switch typeof! item.method
@@ -61,7 +65,7 @@ class DyService
 
             @handler-list.push [
                 item.router
-                ((item) ->
+                item.handler || ((item) ->
                     (req, resp) ->
                         self.request item.url, req, resp
                 ) item
@@ -74,10 +78,13 @@ class DyService
         pathname = if pathname.char-at(pathname.length - 1) is '/' then pathname else pathname + '/'
         for item in @handler-list
             re = new RegExp ('^' + item[0]).replace /\//g, '\\/'
-            if not pathname.match re
+            m = pathname.match re
+            if not m
                 continue
+            args = [req, resp]
+            [].push.apply args, m.slice 1
             if item[2].index-of(req.method) > -1
-                item[1] req, resp
+                item[1].apply this, args
             else
                 resp.statusCode = 405;
                 resp.end 'Method not allowed.'
@@ -111,6 +118,17 @@ handler-list =
       method: 'POST'
     * router: '/api/blog/list/by_recommend/'
       url: 'http://ios_blog.mzread.com/api/v1/blog/blogs/recommend_blogs.json'
+    * router: '/api/post/detail/'
+      handler: (req, resp) ->
+          url = utils.get-query-params req.url .url
+          if not url
+              return libs.return-error-json resp, '缺少 url 参数'
+          url = decodeURIComponent url
+          do
+              content <- helpers.get-readable-content url
+              return libs.return-json resp, do
+                title: content.title
+                content: content.content
 dy-service.register-handler handler-list
 
 do

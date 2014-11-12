@@ -2,7 +2,7 @@ var utils = require('../utils.js');
 var assert = require('assert');
 
 describe('utils', function() {
-  var url = 'sdafsdf?a=b&c=d&eee=fff';
+  var url = 'http://sdf.sdfsd.sdafsdf?a=b&c=d&eee=fff';
   assert.equal(utils.getQueryParams(url).a, 'b');
   assert.equal(utils.getQueryParams(url).c, 'd');
   assert.equal(utils.getQueryParams(url).eee, 'fff');

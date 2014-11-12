@@ -3,7 +3,7 @@ require! {
     readability
 }
 
-get-readable = (url, cbk) ->
+get-readable-content = (url, cbk) ->
     do
         err, response, body <- request url
         if not err and response.statusCode is 200
@@ -11,4 +11,4 @@ get-readable = (url, cbk) ->
             cbk result
 
 module.exports =
-    * get-readable: get-readable
+    * get-readable-content: get-readable-content

@@ -7,7 +7,6 @@ function getUrl(url) {
   return url.substr(0, idx);
 }
 function queryStrToObj(str) {
-  str = decodeURIComponent(str);
   var obj = {};
   var pArr = str.split('&');
   pArr.forEach(function(pair) {
