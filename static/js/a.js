@@ -1,5 +1,6 @@
 $(function() {
   var $D = $(document),
+      hasOwn = {}.hasOwnProperty,
       router = new LightHouse({
       }),
       routers = [
@@ -228,13 +229,35 @@ $(function() {
         alert(jsn.message);
         return;
       }
-      var html = postDetailRender(jsn.data);
+      var html = postDetailRender({
+        content: jsn.data.content,
+        url: jsn.data.url
+      });
       // TODO
       $container.html(html);
+      var $title = $('#article-title');
+      var title = $title.html();
+      $title.html('<a target="_blank" href="' + jsn.data.url + '">' + title + '</a>');
+      var maxWidth = $container.width();
       $('#readability-content').find('img').each(function(_, img) {
         var $img = $(img);
-        if (!$img.data('src')) return;
-        $img.attr('src', $img.data('src'));
+        var dataSet = $img.data();
+        var d;
+        for (var key in dataSet) {
+          d = dataSet[key];
+          if (!d || !hasOwn.call(dataSet, key)) continue;
+          if (d.indexOf && d.indexOf('http') === 0 && key.indexOf('src') > -1) {
+            $img.attr('src', d);
+          }
+          if (key.indexOf('width') > -1) {
+            if (+d <= maxWidth) {
+              $img.width(d);
+            } else {
+              $img.width(maxWidth);
+            }
+            $img.css('height', 'auto');
+          }
+        }
       });
     });
   }

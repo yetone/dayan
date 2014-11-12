@@ -129,6 +129,7 @@ handler-list =
               return libs.return-json resp, do
                 title: content.title
                 content: content.content
+                url: url
 dy-service.register-handler handler-list
 
 do

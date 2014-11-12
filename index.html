@@ -15,7 +15,10 @@
     <script src="js/a.js"></script>
     <script type="text/templage" id="post-detail-tpl">
       <div class="post-detail">
-        <div class="content">{{ content }}</div>
+        <div class="content" data-url="{{ url }}">{{ content }}</div>
+        <div class="outlink">
+          <a target="_blank" href="{{ url }}">点我查看原文 >>></a>
+        </div>
       </div>
     </script>
     <script type="text/templage" id="me-header-tpl">
@@ -136,8 +139,8 @@
           <a class="post-title" href="#/post/{{ encodeURIComponent(post.url) }}/">
             {{ post.title }}
           </a>
-          <a data-id="{{ post.blog_guid }}" class="post-blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>
-          <a class="post-summary" target="_blank" href="{{ post.url }}">
+          <a data-id="{{ post.blog_guid }}" class="post-blog-name" href="#/post/{{ encodeURIComponent(post.url) }}/">{{ post.blog_name }}</a>
+          <a class="post-summary" href="#/post/{{ encodeURIComponent(post.url) }}/">
             {{ post.summary }}
           </a>
         </div>

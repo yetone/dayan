@@ -284,7 +284,9 @@ a {
   border: 8px solid transparent;
   border-bottom-color: #e8e8e8;
 }
-#article-title {
+#article-title,
+#article-title a:link,
+#article-title a:visited {
   font-weight: normal;
   font-size: 20px;
   margin: 30px 0;
@@ -298,6 +300,12 @@ a {
 }
 #readability-content p {
   text-indent: 2em;
+}
+.outlink a {
+  padding: 20px 0;
+  color: #555;
+  font-size: 16px;
+  text-decoration: underline;
 }
 @media screen and (max-width: 720px) {
   .ipt {

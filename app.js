@@ -157,7 +157,8 @@
         return helpers.getReadableContent(url, function(content){
           return libs.returnJson(resp, {
             title: content.title,
-            content: content.content
+            content: content.content,
+            url: url
           });
         });
       }
