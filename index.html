@@ -128,7 +128,7 @@
         <span class="recommend">荐</span>
         {% end %}
         <div class="fl {% if post.image %}hasimg{% end %}">
-          <a class="post-title" href="#/post/{{ encodeURIComponent(post.url) }}">
+          <a class="post-title" target="_blank" href="{{ post.url }}">
             {{ post.title }}
           </a>
           <a data-id="{{ post.blog_guid }}" class="post-blog-name" target="_blank" href="{{ post.url }}">{{ post.blog_name }}</a>
