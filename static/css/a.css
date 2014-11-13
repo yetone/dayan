@@ -7,6 +7,7 @@ body {
 body {
   font-size: 14px;
   line-height: 1.8;
+  color: #333;
 }
 ul, ol, li {
   list-style: none;
@@ -59,7 +60,6 @@ a {
 }
 .post-title:link,
 .post-title:hover {
-  color: #000;
   font-size: 20px;
   word-break: break-word;
 }
