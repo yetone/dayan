@@ -338,13 +338,10 @@ a {
   }
   .post-item,
   .blog-item,
-  .category-item {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  #readability-content {
-    padding-left: .5em;
-    padding-right: .5em;
+  .category-item,
+  .post-detail .content {
+    padding-left: .618em;
+    padding-right: .618em;
   }
 }
 @media screen and (max-width: 500px) {
