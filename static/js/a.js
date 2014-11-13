@@ -239,7 +239,8 @@ $(function() {
       var title = $title.html();
       $title.html('<a target="_blank" href="' + jsn.data.url + '">' + title + '</a>');
       var maxWidth = $container.width();
-      $('#readability-content').find('img').each(function(_, img) {
+      var $imgs = $('#readability-content').find('img')
+      $imgs.each(function(_, img) {
         var $img = $(img);
         var dataSet = $img.data();
         var d;
@@ -258,6 +259,8 @@ $(function() {
             $img.css('height', 'auto');
           }
         }
+        var src = $img.attr('src');
+        $img.attr('src', '/api/fetch/image/?url=' + encodeURIComponent(src));
       });
     });
   }

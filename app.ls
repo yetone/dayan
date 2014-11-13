@@ -121,16 +121,29 @@ handler-list =
       url: 'http://ios_blog.mzread.com/api/v1/blog/blogs/recommend_blogs.json'
     * router: '/api/post/detail/'
       handler: (req, resp) ->
-          url = utils.get-query-params req.url .url
-          if not url
+          _url = utils.get-query-params req.url .url
+          if not _url
               return libs.return-error-json resp, '缺少 url 参数'
-          url = decodeURIComponent url
+          _url = decodeURIComponent _url
           do
-              content <- helpers.get-readable-content url
+              content <- helpers.get-readable-content _url
               return libs.return-json resp, do
                 title: content.title
                 content: content.content
-                url: url
+                url: _url
+    * router: '/api/fetch/image/'
+      handler: (req, resp) ->
+          _url = utils.get-query-params req.url .url
+          if not _url
+              return libs.return-error-json resp, '缺少 url 参数'
+          _url = decodeURIComponent _url
+          obj = url.parse _url
+          request do
+            url: _url
+            headers: do
+                Referer: obj.protocol + '//' + obj.host
+          .pipe resp
+
 dy-service.register-handler handler-list
 
 do

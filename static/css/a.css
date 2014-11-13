@@ -303,6 +303,9 @@ a {
 #readability-content p {
   display: block !important;
 }
+#readability-content img {
+  max-width: 100%;
+}
 .outlink a {
   padding: 20px 0;
   color: #555;

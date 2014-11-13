@@ -149,19 +149,36 @@
     }, {
       router: '/api/post/detail/',
       handler: function(req, resp){
-        var url;
-        url = utils.getQueryParams(req.url).url;
-        if (!url) {
+        var _url;
+        _url = utils.getQueryParams(req.url).url;
+        if (!_url) {
           return libs.returnErrorJson(resp, '缺少 url 参数');
         }
-        url = decodeURIComponent(url);
-        return helpers.getReadableContent(url, function(content){
+        _url = decodeURIComponent(_url);
+        return helpers.getReadableContent(_url, function(content){
           return libs.returnJson(resp, {
             title: content.title,
             content: content.content,
-            url: url
+            url: _url
           });
         });
+      }
+    }, {
+      router: '/api/fetch/image/',
+      handler: function(req, resp){
+        var _url, obj;
+        _url = utils.getQueryParams(req.url).url;
+        if (!_url) {
+          return libs.returnErrorJson(resp, '缺少 url 参数');
+        }
+        _url = decodeURIComponent(_url);
+        obj = url.parse(_url);
+        return request({
+          url: _url,
+          headers: {
+            Referer: obj.protocol + '//' + obj.host
+          }
+        }).pipe(resp);
       }
     }
   ];
