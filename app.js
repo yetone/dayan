@@ -34,7 +34,7 @@
           body += data;
         });
         req.on('end', function(){
-          var body, form;
+          var form;
           body = decodeURIComponent(body);
           form = utils.queryStrToObj(body);
           req.pipe(request.post(url, {

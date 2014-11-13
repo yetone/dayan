@@ -37,7 +37,7 @@ class DyService
 
                 do
                     <-! req.on \end
-                    body = decodeURIComponent body
+                    body := decodeURIComponent body
                     form = utils.query-str-to-obj body
                     req.pipe request.post url, form: form .pipe resp
             case \GET
