@@ -9,6 +9,7 @@ require! {
     \./libs
     \./helpers
 }
+_ = require 'prelude-ls'
 
 file = new node-static.Server \./static
 server = http.create-server!
@@ -45,7 +46,7 @@ class DyService
     register-handler: (router, url, method, handler) !->
         self = @
         arr = router
-        if not is-type \Array arr
+        if not _.is-type \Array arr
             arr.push do
                 router: router
                 url: url
