@@ -16,6 +16,7 @@ ul, ol, li {
 a {
   display: block;
   text-decoration: none;
+  color: #259;
 }
 .dn {
   display: none;
