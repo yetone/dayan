@@ -49,7 +49,7 @@
       var self, arr, i$, len$, item, methodList;
       self = this;
       arr = router;
-      if (toString$.call(arr).slice(8, -1) !== 'Array') {
+      if (!isType('Array', arr)) {
         arr.push({
           router: router,
           url: url,

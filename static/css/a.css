@@ -295,11 +295,11 @@ a {
 #readability-content {
   font-size: 16px;
   color: #414243;
-  padding-top: 20px;
+  padding-top: 1.25em;
   border-top: 1px solid #e8e8e8;
 }
 #readability-content p {
-  text-indent: 2em;
+  display: block !important;
 }
 .outlink a {
   padding: 20px 0;
@@ -336,6 +336,10 @@ a {
   .category-item {
     padding-left: 10px;
     padding-right: 10px;
+  }
+  #readability-content {
+    padding-left: .5em;
+    padding-right: .5em;
   }
 }
 @media screen and (max-width: 500px) {

@@ -45,7 +45,7 @@ class DyService
     register-handler: (router, url, method, handler) !->
         self = @
         arr = router
-        if typeof! arr is not \Array
+        if not is-type \Array arr
             arr.push do
                 router: router
                 url: url
