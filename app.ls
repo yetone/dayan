@@ -80,7 +80,7 @@ class DyService
         pathname = if pathname.char-at(pathname.length - 1) is '/' then pathname else pathname + '/'
         for item in @handler-list
             [pattern, handler, method-list] = item
-            re = new RegExp ('^' + pattern).replace //\///g, '\\/'
+            re = new RegExp ('^' + pattern).replace /\//g, '\\/'
             m = pathname.match re
             if not m
                 continue
