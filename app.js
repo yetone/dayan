@@ -98,13 +98,12 @@
         }
         args = [req, resp];
         [].push.apply(args, m.slice(1));
-        if (methodList.indexOf(req.method) > -1) {
-          handler.apply(this, args);
-        } else {
+        if (!in$(req.method, methodList)) {
           resp.statusCode = 405;
           resp.end('Method not allowed.');
+          return;
         }
-        return;
+        handler.apply(this, args);
       }
       resp.statusCode = 404;
       resp.end('Not found.');
@@ -211,5 +210,10 @@
     var own = {}.hasOwnProperty;
     for (var key in src) if (own.call(src, key)) obj[key] = src[key];
     return obj;
+  }
+  function in$(x, xs){
+    var i = -1, l = xs.length >>> 0;
+    while (++i < l) if (x === xs[i]) return true;
+    return false;
   }
 }).call(this);

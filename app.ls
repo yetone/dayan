@@ -86,12 +86,11 @@ class DyService
                 continue
             args = [req, resp]
             [].push.apply args, m.slice 1
-            if method-list.index-of(req.method) > -1
-                handler.apply this, args
-            else
+            if req.method not in method-list
                 resp.statusCode = 405;
                 resp.end 'Method not allowed.'
-            return
+                return
+            handler.apply this, args
         resp.statusCode = 404
         resp.end('Not found.')
 
