@@ -51,12 +51,12 @@
       self = this;
       arr = router;
       if (!_.isType('Array', arr)) {
-        arr.push({
+        arr = [{
           router: router,
           url: url,
           method: method,
           handler: handler
-        });
+        }];
       }
       for (i$ = 0, len$ = arr.length; i$ < len$; ++i$) {
         item = arr[i$];

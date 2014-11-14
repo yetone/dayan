@@ -47,11 +47,12 @@ class DyService
         self = @
         arr = router
         if not _.is-type \Array arr
-            arr.push do
+            arr = [
                 router: router
                 url: url
                 method: method
                 handler: handler
+            ]
 
         for item in arr
             switch typeof! item.method
