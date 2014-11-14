@@ -79,14 +79,15 @@ class DyService
         pathname = url.parse req.url .pathname
         pathname = if pathname.char-at(pathname.length - 1) is '/' then pathname else pathname + '/'
         for item in @handler-list
-            re = new RegExp ('^' + item[0]).replace /\//g, '\\/'
+            [pattern, handler, method-list] = item
+            re = new RegExp ('^' + pattern).replace //\///g, '\\/'
             m = pathname.match re
             if not m
                 continue
             args = [req, resp]
             [].push.apply args, m.slice 1
-            if item[2].index-of(req.method) > -1
-                item[1].apply this, args
+            if method-list.index-of(req.method) > -1
+                handler.apply this, args
             else
                 resp.statusCode = 405;
                 resp.end 'Method not allowed.'

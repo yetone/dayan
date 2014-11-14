@@ -82,7 +82,7 @@
       }
     };
     prototype.route = function(req, resp){
-      var self, pathname, i$, ref$, len$, item, re, m, args;
+      var self, pathname, i$, ref$, len$, item, pattern, handler, methodList, re, m, args;
       self = this;
       pathname = url.parse(req.url).pathname;
       pathname = pathname.charAt(pathname.length - 1) === '/'
@@ -90,15 +90,16 @@
         : pathname + '/';
       for (i$ = 0, len$ = (ref$ = this.handlerList).length; i$ < len$; ++i$) {
         item = ref$[i$];
-        re = new RegExp(('^' + item[0]).replace(/\//g, '\\/'));
+        pattern = item[0], handler = item[1], methodList = item[2];
+        re = new RegExp(('^' + pattern).replace(/\//g, '\\/'));
         m = pathname.match(re);
         if (!m) {
           continue;
         }
         args = [req, resp];
         [].push.apply(args, m.slice(1));
-        if (item[2].indexOf(req.method) > -1) {
-          item[1].apply(this, args);
+        if (methodList.indexOf(req.method) > -1) {
+          handler.apply(this, args);
         } else {
           resp.statusCode = 405;
           resp.end('Method not allowed.');
