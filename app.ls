@@ -19,7 +19,7 @@ server = http.create-server (req, resp) ->
         'Access-Control-Allow-Credentials': false
         'Access-Control-Max-Age': '86400'
         'Access-Control-Allow-Headers': 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
-    resp.writeHead 200 headers
+    resp.write-head 200 headers
     if req.method is \OPTIONS
         resp.end!
 
@@ -100,6 +100,7 @@ class DyService
                 resp.end 'Method not allowed.'
                 return
             handler.apply this, args
+            return
         resp.statusCode = 404
         resp.end('Not found.')
 

@@ -117,6 +117,7 @@
           return;
         }
         handler.apply(this, args);
+        return;
       }
       resp.statusCode = 404;
       resp.end('Not found.');
