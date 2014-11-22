@@ -12,7 +12,20 @@
   helpers = require('./helpers');
   _ = require('prelude-ls');
   file = new nodeStatic.Server('./static');
-  server = http.createServer();
+  server = http.createServer(function(req, resp){
+    var headers;
+    headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Credentials': false,
+      'Access-Control-Max-Age': '86400',
+      'Access-Control-Allow-Headers': 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept'
+    };
+    resp.writeHead(200, headers);
+    if (req.method === 'OPTIONS') {
+      return resp.end();
+    }
+  });
   commander.version('0.0.1').option('-p, --port <n>', 'port', 18888).option('-H, --host [value]', 'host', '127.0.0.1').parse(process.argv);
   DyService = (function(){
     DyService.displayName = 'DyService';
