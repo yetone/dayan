@@ -2,7 +2,7 @@ require! {
     fs
     commander
     request
-    'node-static'
+    \node-static
     http
     url
     \./utils
