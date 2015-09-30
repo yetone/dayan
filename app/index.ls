@@ -154,8 +154,9 @@ do
     pathname = if pathname.char-at(pathname.length - 1) is '/' then pathname else pathname + '/'
     if pathname is \/
         return do
-            err, data <- fs.read-file \./index.html
+            err, data <- fs.read-file \./html/index.html
             if err
+                console.dir(err)
                 resp.statusCode = 502
                 return resp.end('Some error.')
             resp.end data.to-string!
@@ -163,6 +164,7 @@ do
         return file.serve req, resp
     dy-service.route req, resp
 
-do
-    <- server.listen commander.port, commander.host
-    console.log 'Listening %s:%d', commander.host, commander.port
+exports.run = !->
+    do
+        <- server.listen commander.port, commander.host
+        console.log 'Listening %s:%d', commander.host, commander.port
