@@ -1,7 +1,7 @@
 {
   "apps": [{
     "name": "dayan",
-    "script": "app.js",
+    "script": "index.js",
     "args": "['--port=18888']",
     "log_date_format": "YYYY-MM-DD HH:mm Z",
     "ignoreWatch" : ["[\\/\\\\]\\./", "node_modules"],
