@@ -31,3 +31,5 @@ node_modules
 .lock-wscript
 
 *.swp
+app/*.js
+index.js
